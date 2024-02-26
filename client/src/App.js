@@ -41,8 +41,10 @@ function App() {
         <ProtectedRoute exact path="/logout" component={Logout} auth={auth}/>
     */} 
       </Routes>
-        
-    <Footer/>
+    <div id='FooterInApp'>
+      <Footer/>
+    </div>        
+    
     </>
   );
 

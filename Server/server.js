@@ -3,19 +3,19 @@ const dotenv = require('dotenv');
 const express = require('express');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-//const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
-// Configure ENV File & Require Connection File
-dotenv.config({path : './config.env'});
-require('./db/conn');
+// // Configure ENV File & Require Connection File
+// dotenv.config({path : './config.env'});
+// require('./db/conn');
 const port = process.env.PORT;
 
-// Require Model
-const Users = require('./models/userSchema');
-const Message = require('./models/msgSchema');
-const authenticate = require('./middleware/authenticate')
+// // Require Model
+// const Users = require('./models/userSchema');
+// const Message = require('./models/msgSchema');
+// const authenticate = require('./middleware/authenticate')
 
 // These Method is Used to Get Data and Cookies from FrontEnd
 app.use(express.json());
@@ -117,13 +117,13 @@ app.get('/logout', (req, res)=>{
     res.status(200).send("User Logged Out")
 })
 
-// Authentication
-app.get('/auth', authenticate, (req, res)=>{
+// // Authentication
+// app.get('/auth', authenticate, (req, res)=>{
 
-})
+// })
 
 // Run Server 
-app.listen(port, ()=>{
+app.listen(3001, ()=>{
     console.log("Server is Listening")
 })
 

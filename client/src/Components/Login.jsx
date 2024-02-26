@@ -1,29 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useE } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //import { useHistory } from "react-router";
 
 const Login = () => {
 
 //   const history = useHistory()
-const history = useNavigate()
+const navigate = useNavigate()
 
   const [user, setUser] = useState({
     email : '',
     password : ''
   });
 
+  const [errors, setErrors] = useState({
+    username: '',
+    email: '',
+    password: ''
+  });
   // Handle Input
   const handleChange = (event) =>{
     let name = event.target.name
     let value = event.target.value
 
     setUser({...user, [name]:value})
+    setErrors({ ...errors, [name]: '' }); // Clear errors when user starts typing again
+
   }
 
   // Handle Login
   const handleSubmit = async (event) =>{
     event.preventDefault();
     const {email, password} = user;
+
+    // Validation
+    let hasErrors = false;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Validation for empty fields
+    if (!email.trim() || !password.trim()) {
+      setErrors({
+        email: email.trim() ? '' : 'Email is required',
+        password: password.trim() ? '' : 'Password is required'
+      });
+      return; // Don't proceed with form submission if any field is empty
+    }
+
+    if (!emailPattern.test(email) || !email.includes('@universite-paris-saclay.fr')) {
+      setErrors({ ...errors, email: 'Invalid email format ( accepted format : X@universite-paris-saclay.fr)' });
+      hasErrors = true;
+    }
+
+    if (password.length < 8) {
+      setErrors({ ...errors, password: 'Password must be at least 8 characters long' });
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      return; // Don't proceed with form submission if there are validation errors
+    }
+
     try {
       const res = await fetch('/login', {
         method : "POST",
@@ -39,8 +74,10 @@ const history = useNavigate()
         window.alert("Invalid Credentials")
       }else{
         window.alert("Login Successfull");
-        window.location.reload();
-        history.push('/')
+        navigate('/Dashboard');
+
+        // window.location.reload();
+        // history.push('/')
         // Token is generated When we Logged In.
         // Now we need to create Schema for Messages
       }
@@ -81,6 +118,8 @@ const history = useNavigate()
                   value={user.email}
                   onChange={handleChange}
                 />
+                {errors.email && <p className="text-danger">{errors.email}</p>}
+
                 <div id="emailHelp" className="form-text">
                   We'll never share your email with anyone else.
                 </div>
@@ -97,6 +136,7 @@ const history = useNavigate()
                   value={user.password}
                   onChange={handleChange}
                 />
+                {errors.password && <p className="text-danger">{errors.password}</p>}
               </div>
               <div className="mb-3 form-check">
                 <input
