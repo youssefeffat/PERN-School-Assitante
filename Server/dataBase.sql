@@ -37,5 +37,6 @@ CREATE TABLE Document (
     FOREIGN KEY (Subject_id) REFERENCES Subject(Subject_id),
     Name VARCHAR(255),
     Type VARCHAR(255),
-    File_type VARCHAR(255)
+    File_type VARCHAR(255),
+    Link VARCHAR 
 );

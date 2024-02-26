@@ -60,19 +60,19 @@ const navigate = useNavigate()
     }
 
     try {
-      const res = await fetch('/login', {
+      const res = await fetch('/Login', {
         method : "POST",
         headers : {
           "Content-Type" : "application/json"
         },
-        body : JSON.stringify({
-          email, password
-        })
+        body : JSON.stringify({ email, password})
       });
 
       if(res.status === 400 || !res){
         window.alert("Invalid Credentials")
-      }else{
+      } else if (res.status === 404) { // Handle non-existent user
+        window.alert("User does not exist. Please sign up first."); // Display appropriate message
+      } else{
         window.alert("Login Successfull");
         navigate('/Dashboard');
 
