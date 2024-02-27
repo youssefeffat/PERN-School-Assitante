@@ -16,16 +16,22 @@ const app = express();
 dotenv.config();
 const port = process.env.PORT || 3001;
 
+// Middleware
+const authenticate = require('./Middleware/authenticate')
+
 // These Method is Used to Get Data and Cookies from FrontEnd
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(cors(corsOptions));
-// parse requests of content-type - application/json
 app.use(bodyParser.json());
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
-var corsOptions = {origin: "http://localhost:3001"};
+app.use(cookieParser());
+const corsOptions = {
+    origin: 'http://localhost:3000', // Allow requests from this origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+app.use(cors(corsOptions));
+
 
   
 {/*------------------------------------------APIs------------------------------------------------------------ */}
@@ -40,6 +46,12 @@ app.get('/', (req, res) => {
 app.post('/Signup', async (req, res) => {
     try {
         const { username, email, password } = req.body;
+        // Check if the email already exists in the database
+        const existingUser = await pool.query('SELECT * FROM Users WHERE Mail = $1', [email]);
+        if (existingUser.rows.length > 0) {
+            // If the email already exists, return an error response
+            return res.status(401).send("Email address already exists");
+        }
         // Hash the password before saving to the database
         const hashedPassword = await bcryptjs.hash(password, 10);
         // Insert user data into the database
@@ -59,6 +71,11 @@ app.post('/Signup', async (req, res) => {
 
 // Login User
 app.post('/Login', async (req, res) => {
+
+    console.log(req.body.password);
+    console.log(req.body.username);
+    console.log(req.body.email);
+    console.log("Api got to the backend");
     
     const { email, password } = req.body;
     try {
@@ -72,9 +89,11 @@ app.post('/Login', async (req, res) => {
             const isMatch = await bcryptjs.compare(password, user.password);
             if (isMatch) {
                 // // Generate Token
-                // const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
-                //     expiresIn: '24h'
-                // });
+                // const token = jwt.sign(
+                //     { userId: user.user_id },
+                //     process.env.JWT_SECRET, 
+                //     {expiresIn: '24h'} 
+                // );
 
                 // res.cookie("jwt", token, {
                 //     expires: new Date(Date.now() + 86400000),
@@ -82,7 +101,7 @@ app.post('/Login', async (req, res) => {
                 // })
                 res.status(200).send("LoggedIn");
             } else {
-                res.status(400).send("Invalid Credentials");
+                res.status(410).send("Invalid Credentials");
             }
 
         } else {
@@ -96,13 +115,38 @@ app.post('/Login', async (req, res) => {
 })
 
 
-
 // Logout Page
-app.get('/logout', (req, res) => {
+app.get('/Logout', (req, res) => {
     res.clearCookie("jwt", { path: '/' })
     res.status(200).send("User Logged Out")
 })
 
+// Authentication
+app.get('/auth', authenticate, (req, res)=>{
+
+})
+
+// Dashboard
+app.post('/getTDs', async (req, res) => {
+    const { firstChoice, secondChoice } = req.body;
+    console.log(firstChoice, secondChoice);
+
+    try {
+      // Construct and execute SQL query
+      const query = `
+        SELECT User_name, Surname, Mail 
+        FROM Users 
+        WHERE User_name = $1 AND Surname = $2;
+      `;
+      const { rows } = await pool.query(query, [firstChoice, secondChoice ]);
+        console.log(rows);
+      // Send query results to frontend
+      res.json(rows);
+    } catch (error) {
+      console.error('Error executing SQL query:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
 
 // Run Server
 app.listen(port, () => {

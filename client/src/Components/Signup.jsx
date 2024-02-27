@@ -73,21 +73,32 @@ const Signup = () => {
     }
 
     try {
-      const res = await fetch('/Signup', {
+      //console.log(user);
+
+      const res = await fetch('http://localhost:3001/Signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password })
       });
+      console.log("fetch sent");
 
       if (res.status === 400 || !res) {
         window.alert('Invalid Signup Details');
-      } else {
-        window.alert('Signup Successful');
-        navigate('/Dashboard');
+      } 
+      if (res.status === 401 ) {
+        window.alert('Email address already exists');
+      } 
+      
+      
+      else {
+        window.alert('Signup Successful please proceed to Login page');
+        navigate('/Login');
       }
     } catch (error) {
       console.log(error);
     }
+
+    //console.log("Handle on submit finished");
   };
 
   return (

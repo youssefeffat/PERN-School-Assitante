@@ -60,7 +60,7 @@ const navigate = useNavigate()
     }
 
     try {
-      const res = await fetch('/Login', {
+      const res = await fetch('http://localhost:3001/Login', {
         method : "POST",
         headers : {
           "Content-Type" : "application/json"
@@ -72,6 +72,8 @@ const navigate = useNavigate()
         window.alert("Invalid Credentials")
       } else if (res.status === 404) { // Handle non-existent user
         window.alert("User does not exist. Please sign up first."); // Display appropriate message
+      } else if (res.status === 410) { // Handle non-existent user
+        window.alert("Password is incorrect"); // Display appropriate message
       } else{
         window.alert("Login Successfull");
         navigate('/Dashboard');

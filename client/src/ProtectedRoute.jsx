@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router';
 
-const ProtectedRoute = ({auth, component:Component, ...rest}) => {
+const Protectedroute = ({auth, component:Component, ...rest}) => {
     return (
         <div>
             <Route {...rest} render={(props)=>{
@@ -12,4 +12,4 @@ const ProtectedRoute = ({auth, component:Component, ...rest}) => {
     );
 }
 
-export default ProtectedRoute;
+export default Protectedroute;

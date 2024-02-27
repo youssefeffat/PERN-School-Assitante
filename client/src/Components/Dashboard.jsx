@@ -16,34 +16,32 @@ const Dashboard = () => {
 
 
 
-  const handleButtonClick = () => {
-    // Prepare data to send to the backend
-    const data = {
-      firstChoice: firstChoice,
-      secondChoice: secondChoice
-    };
+  // const [criteria1, setCriteria1] = useState('');
+  // const [criteria2, setCriteria2] = useState('');
+  const [tableTD, setTableTD] = useState([]);
+  const [tableTP, setTableTP] = useState([]);
+  const [tableC, setTableC] = useState([]);
 
-    // Make an HTTP POST request to /api/getDoc
-    fetch('/api/getDoc', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => {
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/getTDs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ firstChoice, secondChoice })
+      });
+
       if (response.ok) {
-        console.log('Data sent successfully');
-        // // Reset choices after successful submission if needed
-        // setFirstChoice('');
-        // setSecondChoice('');
+        const data = await response.json();
+        setTableTD(data);
+        console.log(data);
       } else {
-        throw new Error('Failed to send data');
+        console.error('Error:', response.statusText);
       }
-    })
-    .catch(error => {
+    } catch (error) {
       console.error('Error:', error);
-    });
+    }
   };
   
   
@@ -122,7 +120,7 @@ const Dashboard = () => {
                           )}
 
                           <div className="mb-3">
-                            <button className="btn btn-primary" onClick={handleButtonClick}>Submit</button>
+                            <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
                           </div>
                         </div>
                       </div>
@@ -165,18 +163,15 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1,001</td>
-                    <td>random</td>
-                    <td>random</td>
-                  </tr>
-                  <tr>
-                    <td>1,002</td>
-                    <td>placeholder</td>
-                    <td>random</td>
-                  </tr> 
+                  {tableTD.map((row, index) => (
+                    <tr key={index}>
+                      <td>{row.user_name}</td>
+                      <td>{row.surname}</td>
+                      <td>{row.mail}</td>
+                    </tr>
+                  ))}
                 </tbody>
-              </table>  
+              </table>
             </div>
             
             <h2>TP</h2>
