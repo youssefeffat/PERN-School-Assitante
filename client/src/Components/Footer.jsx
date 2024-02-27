@@ -1,7 +1,65 @@
-import React from "react";
+import React, {useState} from "react";
 import { NavLink } from "react-router-dom";
 
 const Footer = () => {
+
+  const [Mail, setEmail] = useState({
+    email : ""
+  });
+
+  const [errors, setErrors] = useState({
+    email: ''
+  });
+
+  // Handle Inputs
+  const handleChange = (event) =>{
+    console.log("Handle change is called");
+    let name = event.target.name;
+    let value = event.target.value;
+    setEmail({...Mail, [name]:value});
+  }
+
+  // Handle Submit
+  const handleSubmit = async (event)=>{
+    event.preventDefault();
+    console.log("Handle submit is called");
+
+    const {email} = Mail;
+
+    // Validation for empty fields
+    if (!email.trim()) {
+      setErrors({
+        email: email.trim() ? '' : 'Email is required',
+      });
+      return; // Don't proceed with form submission if any field is empty
+    }
+
+    try {
+
+      const res = await fetch('http://localhost:3001/Subscription', {
+        method : "POST",
+        headers : {
+          "Content-Type" : "application/json"
+        },
+        body : JSON.stringify({email})
+      })
+      console.log(res.status)
+      if(res.status === 400 || !res){
+        window.alert("Message Not Sent. Try Again Later")
+      }else{
+        // You need to Restart the Server for Proxy Works
+        // Now Try Again
+        window.alert("you have been subscribed");
+        setEmail({
+          email : ""
+        })
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <footer className="footer text-white bg-primary py-2">
       <div className="container">
@@ -32,16 +90,24 @@ const Footer = () => {
           <div className="col-md-6 col-sm-12">
             <h5>Subscribe to our newsletter</h5>
             <p>Monthly digest of what's new and exciting from us.</p>
-            <div className="input-group">
-              <input
-                type="email"
-                className="form-control"
-                placeholder="Email address"
-              />
-              <button className="btn btn-dark rounded-end" type="button">
-                Subscribe
-              </button>
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="input-group">
+                <input
+                  type="email"
+                  className="form-control"
+                  placeholder="Email address"
+                  name="email"
+                  value={Mail.email}
+                  onChange={handleChange}
+                />
+                <button className="btn btn-dark rounded-end"  type="submit" >
+                  Subscribe
+                </button>
+                {/* <div>
+                  {errors.email && <p className="text-danger">{errors.email}</p>}
+                </div> */}
+              </div>
+            </form>
           </div>
         </div>
         <div className="row mt-2 border-top">

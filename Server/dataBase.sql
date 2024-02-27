@@ -40,3 +40,20 @@ CREATE TABLE Document (
     File_type VARCHAR(255),
     Link VARCHAR 
 );
+
+CREATE TABLE Message (
+    Message_id SERIAL PRIMARY KEY,
+    UserName VARCHAR(255),
+    Mail VARCHAR(255), 
+    Message VARCHAR,
+    Date DATE
+);
+
+CREATE TABLE Subscription (
+    Sub_id SERIAL PRIMARY KEY,
+    Mail VARCHAR(255), 
+    Date DATE
+);
+
+
+

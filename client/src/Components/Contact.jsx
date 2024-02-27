@@ -8,6 +8,12 @@ const Contact = () => {
     message : ""
   });
 
+  const [errors, setErrors] = useState({
+    username: '',
+    email: '',
+    password: ''
+  });
+
   // Handle Inputs
   const handleChange = (event) =>{
     let name = event.target.name;
@@ -22,12 +28,33 @@ const Contact = () => {
     // Object DeStructuring
     // Store Object Data into Variables
     const {name, email, message} = msg;
+
+    // Validation
+    let hasErrors = false;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Validation for empty fields
+    if (!email.trim() || !name.trim() || !message.trim()) {
+      setErrors({
+        email: email.trim() ? '' : 'Email is required',
+        name: name.trim() ? '' : 'Name is required',
+        message: message.trim() ? '' : 'Message is required'
+      });
+      return; // Don't proceed with form submission if any field is empty
+    }
+
+    if (!emailPattern.test(email)) {
+      setErrors({ ...errors, email: 'Invalid email format ( accepted format : X@universite-paris-saclay.fr)' });
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      return; // Don't proceed with form submission if there are validation errors
+    }
+
     try {
-      //It is Submitted on port 3000 by default
-      // Which is Front End but we need to 
-      // Submit it on Backend which is on 
-      // Port 3001. So we need Proxy.
-      const res = await fetch('/message', {
+
+      const res = await fetch('http://localhost:3001/Contact/message', {
         method : "POST",
         headers : {
           "Content-Type" : "application/json"
@@ -91,6 +118,7 @@ const Contact = () => {
                     value={msg.name}
                     onChange={handleChange}
                   />
+                  {errors.name && <p className="text-danger">{errors.name}</p>}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="exampleFormControlInput1" className="form-label">
@@ -105,6 +133,7 @@ const Contact = () => {
                     value={msg.email}
                     onChange={handleChange}
                   />
+                  {errors.email && <p className="text-danger">{errors.email}</p>}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="exampleFormControlTextarea1" className="form-label">
@@ -118,6 +147,7 @@ const Contact = () => {
                     value={msg.message}
                     onChange={handleChange}
                   ></textarea>
+                  {errors.message && <p className="text-danger">{errors.message}</p>}
                 </div>
                 <button type="submit" className="btn btn-outline-primary rounded-pill px-4">Send Message <i className="fa fa-paper-plane ms-2"></i></button>
               </form>

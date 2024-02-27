@@ -126,6 +126,44 @@ app.get('/auth', authenticate, (req, res)=>{
 
 })
 
+
+// Contact
+app.post('/Contact/message', async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+        const createMessageQuery = `
+            INSERT INTO Message (UserName, Mail, Message)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        `;
+        const newMessage = await pool.query(createMessageQuery, [name, email, message]);
+        res.status(200).send("Message Sent");
+
+    } catch (error) {
+        console.error("Error during message:", error.message);
+        res.status(400).send(error.message);
+    }
+})
+
+//Subscription
+app.post('/Subscription', async (req, res) => {   
+    try {
+        const {email} = req.body;
+        const createMessageQuery = `
+            INSERT INTO Subscription (Mail)
+            VALUES ($1)
+            RETURNING *
+        `;
+        const newMessage = await pool.query(createMessageQuery, [email]);
+        res.status(200).send("Message Sent");
+
+    } catch (error) {
+        console.error("Error during message:", error.message);
+        res.status(400).send(error.message);
+    }
+    })
+
+
 // Dashboard
 app.post('/getTDs', async (req, res) => {
     const { firstChoice, secondChoice } = req.body;
