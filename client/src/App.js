@@ -1,4 +1,5 @@
 import {Route, Switch, Routes, Router} from 'react-router';
+import {Navigate} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './App.css';
 import MyNavbar from './Components/Navbar';
@@ -57,7 +58,8 @@ function App() {
         <Route exact path="/Login" element={<Login isLoggedIn={true} />}/>
         <Route exact path="/Signup" element={<Signup/>}/>
         <Route exact path="/Logout" element={<Logout/>}/>
-        <Route  path="/Dashboard" element={<Dashboard/>} />=
+        <Route  path="/Dashboard" element={<Dashboard/>} />
+        <Route path="*" element={<Navigate to="/"/>} />
       </Routes>
     
     {/* <ProtectedRoute exact path="/login" component={Login} auth={auth1}/>
