@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   const [user, setUser] = useState({
     username: '',
@@ -21,6 +22,15 @@ const Signup = () => {
 
   // State variable to track agreement to terms
   const [agreeTerms, setAgreeTerms] = useState(false);
+
+  // Handle redirect if already logged in
+  useEffect(() => {
+    console.log(isLoggedIn);
+    if (isLoggedIn == "true"){
+      navigate('/');
+      window.location.reload()
+    }
+  }, []);
 
   // Handle Inputs
   const handleInput = (event) => {

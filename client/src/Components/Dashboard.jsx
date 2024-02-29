@@ -1,12 +1,24 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useHistory, useNavigate } from 'react-router';
 import {Button, Dropdown} from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
 const Dashboard = () => {
+  const Navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   const [firstChoice, setFirstChoice] = useState('');
   const [secondChoice, setSecondChoice] = useState('');
+
+  // Handle redirect if logged out
+  useEffect(() => {
+    console.log(isLoggedIn);
+    if (isLoggedIn != "true"){
+      Navigate('/');
+      window.location.reload()
+    }
+  }, []);
 
   const handleFirstChoiceChange = (event) => {
     setFirstChoice(event.target.value);
@@ -43,7 +55,7 @@ const Dashboard = () => {
       console.error('Error:', error);
     }
   };
-  
+
   const handleSubmitV2 = async () => {
     try {
       const responseTD = await fetch('http://localhost:3001/getTDs', {
