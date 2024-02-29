@@ -44,6 +44,45 @@ const Dashboard = () => {
     }
   };
   
+  const handleSubmitV2 = async () => {
+    try {
+      const responseTD = await fetch('http://localhost:3001/getTDs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ firstChoice, secondChoice })
+      });
+      const responseTP = await fetch('http://localhost:3001/getTPs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ firstChoice, secondChoice })
+      });
+      const responseCs = await fetch('http://localhost:3001/getCs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ firstChoice, secondChoice })
+      });
+
+      if (responseTD.ok && responseTP.ok && responseCs.ok) {
+        const dataTD = await responseTD.json();
+        const dataTP = await responseTP.json();
+        const dataCs = await responseCs.json();
+        setTableTD(dataTD);
+        setTableTP(dataTP);
+        setTableC(dataCs);
+  
+      } else {
+        console.error('Error:', responseTD.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
   
 
     return (
@@ -114,13 +153,13 @@ const Dashboard = () => {
                                 <option value="INFO">INFO</option>
                                 <option value="MTX">MTX</option>
                                 <option value="PSO">PSO</option>
-                                <option value="PSO">ESR</option>
+                                <option value="ESR">ESR</option>
                               </select>
                             </div>
                           )}
 
                           <div className="mb-3">
-                            <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+                            <button className="btn btn-primary" onClick={handleSubmitV2} >Submit</button>
                           </div>
                         </div>
                       </div>
@@ -165,9 +204,9 @@ const Dashboard = () => {
                 <tbody>
                   {tableTD.map((row, index) => (
                     <tr key={index}>
-                      <td>{row.user_name}</td>
-                      <td>{row.surname}</td>
-                      <td>{row.mail}</td>
+                      <td>{row.name}</td>
+                      <td>{row.type}</td>
+                      <td><a href={row.link}>{row.link}</a></td>
                     </tr>
                   ))}
                 </tbody>
@@ -185,16 +224,13 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1,001</td>
-                    <td>random</td>
-                    <td>random</td>
-                  </tr>
-                  <tr>
-                    <td>1,002</td>
-                    <td>placeholder</td>
-                    <td>random</td>
-                  </tr> 
+                {tableTP.map((row, index) => (
+                    <tr key={index}>
+                      <td>{row.name}</td>
+                      <td>{row.type}</td>
+                      <td><a href={row.link}>{row.link}</a></td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>  
             </div>
@@ -210,16 +246,13 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1,001</td>
-                    <td>random</td>
-                    <td>random</td>
-                  </tr>
-                  <tr>
-                    <td>1,002</td>
-                    <td>placeholder</td>
-                    <td>random</td>
-                  </tr> 
+                {tableC.map((row, index) => (
+                    <tr key={index}>
+                     <td>{row.name}</td>
+                      <td>{row.type}</td>
+                      <td><a href={row.link}>{row.link}</a></td>
+                    </tr>
+                  ))} 
                 </tbody>
               </table>  
             </div>

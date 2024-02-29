@@ -6,7 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 //import polylogo from '//Images/polylogo.png';
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1sFRk1Lo2Cj7pEuNlwRpbYd3s8WLa+7VgweVC5I4B+DeOgbe4fPeCxu4NvABKg+qNNQbBRcmcbatZx8efWY9LQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-const MyNavbar = (props) => {
+const MyNavbar = ({isLoggedIn}) => {
+    console.log("Navbar.js",isLoggedIn);
     let Navigate = useNavigate();
     return <>
     <section id='Navbar'>
@@ -27,7 +28,7 @@ const MyNavbar = (props) => {
                     <Nav.Link as={NavLink} to="/About">About Us</Nav.Link>
                     <Nav.Link as={NavLink} to="/Contact">Contact Us </Nav.Link>
                 </Nav>
-                <Nav>
+    {!isLoggedIn? <Nav>
                     <Link to="/Login" > 
                     <Button variant="outline-light" className="me-2" >
                         <FaUserCircle /> Login 
@@ -35,11 +36,26 @@ const MyNavbar = (props) => {
                     </Button>
                     </Link>
                     <Link to="./Signup" > 
-                    <Button as={NavLink} to="/Signup" variant="outline-light">
+                    <Button as={NavLink} to="/Signup" variant="outline-light" >
                         <FaSignInAlt /> SignUp
                     </Button>
                     </Link> 
-                </Nav>
+                </Nav> 
+    : null}
+    {isLoggedIn? <Nav>
+                    <Link to="Dashboard" > 
+                    <Button variant="outline-light" className="me-2" >
+                        <FaUserCircle /> Dashboard 
+                        {/* <Navigate to="/Login"/> */}
+                    </Button>
+                    </Link>
+                    <Link to="./Logout" > 
+                    <Button as={NavLink} to="/Logout" variant="outline-light" >
+                        <FaSignInAlt /> Logout
+                    </Button>
+                    </Link> 
+                </Nav> 
+    : null}
             </Container>
         </Navbar>
     </section>

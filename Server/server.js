@@ -7,19 +7,19 @@ const cors = require('cors');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const pool = require('./Database');
-
-// Create Server
-const app = express();
+const pool = require('./database');
+const router = express.Router();
+const authorize = require("./Middleware/authorize");
 
 // Configure ENV File & Require Connection File
 dotenv.config();
 const port = process.env.PORT || 3001;
 
-// Middleware
-const authenticate = require('./Middleware/authenticate')
+// Create Server
+const app = express();
 
-// These Method is Used to Get Data and Cookies from FrontEnd
+// Middleware
+const authenticate = require('./Middleware/authorize');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -33,7 +33,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-  
+//Routes
+
+app.use("/Authentification", require("./Routes/Auth"));
+app.use("/Message", require("./Routes/Message"));
+app.use("/Subscription", require("./Routes/Subscription"));
+app.use("/Document", require("./Routes/Document"));  
+
 {/*------------------------------------------APIs------------------------------------------------------------ */}
 
 app.get('/', (req, res) => {
@@ -77,7 +83,7 @@ app.post('/Login', async (req, res) => {
     console.log(req.body.email);
     console.log("Api got to the backend");
     
-    const { email, password } = req.body;
+    //const { email, password } = req.body;
     try {
         const { email, password } = req.body;
         // Find User 
@@ -167,17 +173,23 @@ app.post('/Subscription', async (req, res) => {
 // Dashboard
 app.post('/getTDs', async (req, res) => {
     const { firstChoice, secondChoice } = req.body;
-    console.log(firstChoice, secondChoice);
+    console.log("-------------------");   
+    console.log("getTDs", firstChoice, secondChoice);
 
     try {
       // Construct and execute SQL query
       const query = `
-        SELECT User_name, Surname, Mail 
-        FROM Users 
-        WHERE User_name = $1 AND Surname = $2;
+      SELECT DISTINCT d.Doc_id, d.Name, d.Type, d.File_type, d.Link
+      FROM Document d
+      JOIN Subject s ON d.Subject_id = s.Subject_id
+      JOIN Promo p ON s.Promo_id = p.Promo_id
+      JOIN Users u ON p.Promo_id = u.Promo_id
+      WHERE Spe = $2
+      AND Niveau = $1
+      AND type = 'TD';
       `;
       const { rows } = await pool.query(query, [firstChoice, secondChoice ]);
-        console.log(rows);
+      console.log(rows);
       // Send query results to frontend
       res.json(rows);
     } catch (error) {
@@ -185,6 +197,60 @@ app.post('/getTDs', async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+app.post('/getTPs', async (req, res) => {
+    const { firstChoice, secondChoice } = req.body;
+    console.log("getTPs", firstChoice, secondChoice);
+
+    try {
+        // Construct and execute SQL query
+        const query = `
+        SELECT DISTINCT d.Doc_id, d.Name, d.Type, d.File_type, d.Link
+        FROM Document d
+        JOIN Subject s ON d.Subject_id = s.Subject_id
+        JOIN Promo p ON s.Promo_id = p.Promo_id
+        JOIN Users u ON p.Promo_id = u.Promo_id
+        WHERE Spe = $2
+        AND Niveau = $1
+        AND type = 'TP';
+        `;
+        const { rows } = await pool.query(query, [firstChoice, secondChoice ]);
+        console.log(rows);
+        // Send query results to frontend
+        res.json(rows);
+    } catch (error) {
+        console.error('Error executing SQL query:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.post('/getCs', async (req, res) => {
+    const { firstChoice, secondChoice } = req.body;
+    console.log("getCs", firstChoice, secondChoice);
+
+    try {
+        // Construct and execute SQL query
+        const query = `
+        SELECT DISTINCT d.Doc_id, d.Name, d.Type, d.File_type, d.Link
+        FROM Document d
+        JOIN Subject s ON d.Subject_id = s.Subject_id
+        JOIN Promo p ON s.Promo_id = p.Promo_id
+        JOIN Users u ON p.Promo_id = u.Promo_id
+        WHERE Spe = $2
+        AND Niveau = $1
+        AND type = 'Cours';
+        `;
+        const { rows } = await pool.query(query, [firstChoice, secondChoice ]);
+        console.log(rows);
+        // Send query results to frontend
+        res.json(rows);
+    } catch (error) {
+        console.error('Error executing SQL query:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 // Run Server
 app.listen(port, () => {
