@@ -20,6 +20,7 @@ const Logout = () => {
                 window.alert("Please Logout Later");
             }else{
                 Navigate('/');
+                localStorage.setItem("isLoggedIn",false)
                 window.location.reload()
             }
         } catch (error) {

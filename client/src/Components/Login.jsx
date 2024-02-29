@@ -76,6 +76,7 @@ const navigate = useNavigate()
         window.alert("Password is incorrect"); // Display appropriate message
       } else{
         window.alert("Login Successfull");
+        localStorage.setItem("isLoggedIn",false)
         navigate('/Dashboard');
 
         // window.location.reload();
