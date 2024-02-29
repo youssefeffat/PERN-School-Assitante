@@ -6,7 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 //import polylogo from '//Images/polylogo.png';
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1sFRk1Lo2Cj7pEuNlwRpbYd3s8WLa+7VgweVC5I4B+DeOgbe4fPeCxu4NvABKg+qNNQbBRcmcbatZx8efWY9LQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-const MyNavbar = ({isLoggedIn}) => {
+const MyNavbar = ({}) => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
     console.log("Navbar.js",isLoggedIn);
     let Navigate = useNavigate();
     return <>
@@ -28,7 +29,7 @@ const MyNavbar = ({isLoggedIn}) => {
                     <Nav.Link as={NavLink} to="/About">About Us</Nav.Link>
                     <Nav.Link as={NavLink} to="/Contact">Contact Us </Nav.Link>
                 </Nav>
-    {!isLoggedIn? <Nav>
+    {isLoggedIn!='true'? <Nav>
                     <Link to="/Login" > 
                     <Button variant="outline-light" className="me-2" >
                         <FaUserCircle /> Login 
@@ -42,7 +43,7 @@ const MyNavbar = ({isLoggedIn}) => {
                     </Link> 
                 </Nav> 
     : null}
-    {isLoggedIn? <Nav>
+    {isLoggedIn=='true'? <Nav>
                     <Link to="Dashboard" > 
                     <Button variant="outline-light" className="me-2" >
                         <FaUserCircle /> Dashboard 

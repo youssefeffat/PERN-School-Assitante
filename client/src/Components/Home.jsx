@@ -2,8 +2,9 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const Home = () => {
-    // localStorage.setItem("isLoggedIn",false);
-    // console.log(localStorage.getItem("isLoggedIn"));
+    if(localStorage.getItem("isLoggedIn") === null){
+        localStorage.setItem("isLoggedIn","false");
+    }
     return (
         <div>
             <section id="home" className="bg-primary text-white py-5">
