@@ -120,6 +120,50 @@ app.post('/Login', async (req, res) => {
     }
 })
 
+// Login Admin User
+app.post('/AdminLogin', async (req, res) => {
+
+    console.log(req.body.password);
+    console.log(req.body.username);
+    console.log(req.body.email);
+    console.log("Api got to the backend");
+    
+    //const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
+        // Find User 
+        const userQuery = `SELECT * FROM Users WHERE Mail = $1 AND Admin = True`;
+        const userData = await pool.query(userQuery, [email]);
+        const user = userData.rows[0];
+        if (user) {
+            //Verify Password
+            const isMatch = await bcryptjs.compare(password, user.password);
+            if (isMatch) {
+                // // Generate Token
+                // const token = jwt.sign(
+                //     { userId: user.user_id },
+                //     process.env.JWT_SECRET, 
+                //     {expiresIn: '24h'} 
+                // );
+
+                // res.cookie("jwt", token, {
+                //     expires: new Date(Date.now() + 86400000),
+                //     httpOnly: true
+                // })
+                res.status(200).send("LoggedIn");
+            } else {
+                res.status(410).send("Invalid Credentials");
+            }
+
+        } else {
+            res.status(404).send("User not found");
+        }
+
+    } catch (error) {
+        console.error("Error during login:", error.message);
+        res.status(400).send(error.message);
+    }
+})
 
 // Logout Page
 app.get('/Logout', (req, res) => {

@@ -5,6 +5,8 @@ import './App.css';
 import MyNavbar from './Components/Navbar';
 import Home from './Components/Home';
 import About from './Components/About';
+import AdminDashboard from './Components/AdminDashboard';
+import AdminLogin from './Components/AdminLogin';
 import Contact from './Components/Contact';
 import Dashboard from './Components/Dashboard';
 import Footer from './Components/Footer';
@@ -59,6 +61,8 @@ function App() {
         <Route exact path="/Signup" element={<Signup/>}/>
         <Route exact path="/Logout" element={<Logout/>}/>
         <Route  path="/Dashboard" element={<Dashboard/>} />
+        <Route  path="/AdminDashboard" element={<AdminDashboard/>} />
+        <Route  path="/AdminLogin" element={<AdminLogin/>} />
         <Route path="*" element={<Navigate to="/"/>} />
       </Routes>
     
