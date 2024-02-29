@@ -56,7 +56,8 @@ function App() {
         <Route exact path="/Contact" element={<Contact/>}/>
         <Route exact path="/Login" element={<Login isLoggedIn={true} />}/>
         <Route exact path="/Signup" element={<Signup/>}/>
-        <Route  path="/Dashboard" element={<Dashboard/>} />
+        <Route exact path="/Logout" element={<Logout/>}/>
+        <Route  path="/Dashboard" element={<Dashboard/>} />=
       </Routes>
     
     {/* <ProtectedRoute exact path="/login" component={Login} auth={auth1}/>

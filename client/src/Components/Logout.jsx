@@ -4,6 +4,7 @@ import { useHistory, useNavigate } from 'react-router';
 const Logout = () => {
 
     const Navigate = useNavigate();
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
 
     const logout = async () => {
         try {
@@ -19,8 +20,8 @@ const Logout = () => {
             if(res.status === 401 || !res ){
                 window.alert("Please Logout Later");
             }else{
-                Navigate('/');
                 localStorage.setItem("isLoggedIn","false")
+                Navigate('/');
                 window.location.reload()
             }
         } catch (error) {
@@ -28,7 +29,13 @@ const Logout = () => {
         }
     }
 
+    // Handle redirect if already logged iout
     useEffect(() => {
+        console.log(isLoggedIn);
+        if (isLoggedIn != "true"){
+          Navigate('/');
+          window.location.reload()
+        }
         logout();
     }, []);
 

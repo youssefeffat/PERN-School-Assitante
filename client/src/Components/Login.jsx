@@ -1,4 +1,4 @@
-import React, { useState, useE } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //import { useHistory } from "react-router";
 
@@ -6,6 +6,7 @@ const Login = () => {
 
 //   const history = useHistory()
 const navigate = useNavigate()
+const isLoggedIn = localStorage.getItem("isLoggedIn");
 
   const [user, setUser] = useState({
     email : '',
@@ -17,6 +18,16 @@ const navigate = useNavigate()
     email: '',
     password: ''
   });
+
+  // Handle redirect if already logged in
+  useEffect(() => {
+    console.log(isLoggedIn);
+    if (isLoggedIn == "true"){
+      navigate('/');
+      window.location.reload()
+    }
+  }, []);
+
   // Handle Input
   const handleChange = (event) =>{
     let name = event.target.name
