@@ -69,7 +69,7 @@ const Footer = () => {
           </div>
           <div className="col-md-3 col-sm-6">
             <h5>Navigation</h5>
-            <ul className="nav flex-column">
+            {/* <ul className="nav flex-column">
               <li className="nav-item mb-2">
                 <NavLink to="/" className="nav-link p-0 text-white">
                   Home
@@ -85,7 +85,17 @@ const Footer = () => {
                   Contact Us
                 </NavLink>
               </li>
-            </ul>
+            </ul> */}
+            <NavLink to="/" className="nav-link p-0 text-white">
+              Home
+            </NavLink>
+            <NavLink to="/About" className="nav-link p-0 text-white">
+              About
+            </NavLink>
+            <NavLink to="/Contact" className="nav-link p-0 text-white">
+              Contact Us    
+            </NavLink>
+
           </div>
           <div className="col-md-6 col-sm-12">
             <h5>Subscribe to our newsletter</h5>
